@@ -1,0 +1,90 @@
+import os
+import colors
+import random
+
+e = True
+
+def clear():
+    if os.name == 'nt':
+        _ = os.system('cls')
+
+def printBoard(board):
+    for r in board:
+        for c in r:
+            if c == "O":
+                print(colors.CGREEN, end="")
+            if c == "X":
+                print(colors.CRED, end="")
+            print(c, end="")
+            print(colors.CWHITE, end="")
+        print()
+
+def game_over(board):
+    for r in board:
+            for c in r:
+                if c == "O":
+                    print(colors.CRED, end="")
+                if c == "X":
+                    print(colors.CRED, end="")
+                print(c, end="")
+                print(colors.CWHITE, end="")
+            print()
+
+#look into classes - these will help you with chess pieces, and managing a board. 
+
+ROWS = 8
+COLS = 8
+board = []
+for r in range(ROWS):
+    board.append([])
+    for c in range(COLS):
+        board[-1].append("#")
+
+x = 1
+y = 1
+
+bomb_x = random.randint(0,7)
+bomb_y = random.randint(0,7)
+
+board[bomb_x][bomb_y] = "X"
+board[x][y] = "O"
+printBoard(board)
+
+while e == True:
+    old_x = x
+    old_y = y
+    move = input("")
+    if move == "w":
+        if x != 0:
+            x = x-1
+            board[old_x][old_y] = "#"
+    elif move == "s":
+        if x != 7:
+            x = x+1
+            board[old_x][old_y] = "#"
+    elif move == "a":
+        if y != 0:
+            y = y-1
+            board[old_x][old_y] = "#"
+    elif move == "d":
+        if y != 7:
+            y = y+1
+            board[old_x][old_y] = "#"
+    elif move == "done":
+        e = False
+    if x == bomb_x and y == bomb_y:
+        if c == "#":
+            print(colors.CBLUE, end="")
+        if c == "O":
+            print(colors.CBLUE, end="")
+        clear()
+        printBoard(board)
+        e = False
+    clear()
+    print(bomb_y)
+    print(bomb_x)
+    print(x)
+    print(y)
+    board[bomb_x][bomb_y] = "X"
+    board[x][y] = "O"
+    printBoard(board)
