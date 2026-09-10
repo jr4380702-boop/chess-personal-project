@@ -1,17 +1,30 @@
 import os
 import time
 import threading
+import colors
+import random
 
+def printBoard(board,a,b,d):
+    global colors
+    for r in board:
+        for c in r:
+            if c == "O":
+                print(a, end="")
+            if c == "X":
+                print(b, end="")
+            print(c, end="")
+            print(d, end="")
+        print()
 
+x = 5
+class white_king:
+    def __init__ (self,x,y):
+        self.x = x
+        self.y = y
 
+    def speak(self):
+        raise NotImplementedError("Subclass must implement abstract method")
 
-def clear():
-    if os.name == 'nt':
-        _ = os.system('cls')
-clear()
-print("hi")
-timer = threading.Timer(5,clear)
-timer.start()
-for i in range(10):
-    time.sleep(1)
-    print("hi")
+class white_king_x(white_king):
+    def speak(self):
+        return self.x + 1

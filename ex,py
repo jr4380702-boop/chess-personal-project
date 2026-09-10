@@ -1,6 +1,7 @@
 import os
 import colors
 import random
+import time
 
 e = True
 
@@ -26,8 +27,9 @@ def game_over(board):
                     print(colors.CRED, end="")
                 if c == "X":
                     print(colors.CRED, end="")
+                if c == "#":
+                    print(colors.CBLUE,end="")
                 print(c, end="")
-                print(colors.CWHITE, end="")
             print()
 
 #look into classes - these will help you with chess pieces, and managing a board. 
@@ -73,18 +75,265 @@ while e == True:
     elif move == "done":
         e = False
     if x == bomb_x and y == bomb_y:
-        if c == "#":
-            print(colors.CBLUE, end="")
-        if c == "O":
-            print(colors.CBLUE, end="")
         clear()
-        printBoard(board)
+        board[old_x][old_y] = "O"
+        game_over(board)
         e = False
+        break
     clear()
-    print(bomb_y)
-    print(bomb_x)
-    print(x)
-    print(y)
     board[bomb_x][bomb_y] = "X"
     board[x][y] = "O"
     printBoard(board)
+
+clear()
+print('''
+     )
+     (
+    .-`-.
+    :   :
+    :TNT:
+    :___:''')
+time.sleep(0.5)
+clear()
+print('''
+    \|/
+   - o -
+    /-`-.
+    :   :
+    :TNT:
+    :___:''')
+time.sleep(0.5)
+clear()
+print('''
+    .---.
+    : | :
+    :-o-:
+    :_|_:''')
+time.sleep(0.1)
+clear()
+print('''
+    .---.
+    (\|/)
+    --0--
+    (/|\)''')
+time.sleep(0.1)
+clear()
+print('''
+   '.\|/.'
+   (\   /)
+   - -O- -
+   (/   \)
+   ,'/|\'.''')
+time.sleep(0.1)
+clear()
+print('''
+'.  \ | /  ,'
+  `. `.' ,'
+ ( .`.|,' .)
+ - ~ -0- ~ -
+ (','|'.` .)
+  .' .'. '.
+,'  / | \  '.''')
+time.sleep(0.1)
+clear()
+print('''
+    \ '  "  
+ ` . `.' ,'
+ . `` ,'. "
+   ~ (   ~ -
+'. ','|` ` .
+  .'  "  '
+,   ' , '  `''')
+time.sleep(0.2)
+clear()
+print('''
+   (  ) (
+    ) ( )
+    (  )
+     ) /
+    ,---.''')
+time.sleep(0.2)
+clear()
+print('''
+      ) 
+    )   )
+    (  )
+     ) /
+    ,---.''')
+time.sleep(0.2)
+clear()
+print('''
+         
+         
+        
+       /
+    ,---.''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+
+
+
+
+
+
+     /\>   <^
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+
+
+
+
+
+     /\>   <^
+    /  \>< / |
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+
+
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+   /          |
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+   /          |
+  /_          |
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+   /          |
+  /_          |
+    \        /
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+   /          |
+  /_          |
+    \        /
+     \      /
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+   /          |
+  /_          |
+    \        /
+     \      /
+     _\    /_
+''')
+time.sleep(0.1)
+clear()
+print('''
+
+     /\>   <^
+    /  \>< / |
+   /    \/    |
+   | ( )      |
+   /          |
+  /_          |
+    \        /
+     \      /
+     _\    /__
+   _/___/\____\_
+''')
+time.sleep(0.1)
+clear()
+print('''
+     /\>   <^
+    /  \>< / |
+   /    \ /   |
+   | ( )      |
+   /          |
+  /_          |
+    \        /
+     \      /
+     _\    /__
+   _/___/\____\_
+  /             \ 
+''')
+#when bomb hit
+#clear the screen
+#use ascii art and brief sleeps to show an animation of an explosion
+# - you can use ai to make the x amount of ascii scenes
