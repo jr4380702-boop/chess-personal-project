@@ -1,51 +1,42 @@
-from tkinter import *
-from rembg import remove
+import tkinter as tk
 from PIL import Image, ImageTk
-from tkinter import filedialog
+import os
 
-root = Tk()
-root.title("Remove Image Background")
-root.geometry('500x700')
+def resize_image(path, target_width, target_height):
+    """
+    Resize an image to fit within target dimensions while keeping aspect ratio.
+    Returns a PhotoImage object for Tkinter.
+    """
+    try:
+        # Open the image
+        img = Image.open(path)
 
-# Functions
-def open_thing():
-	global input_path, my_img
-	# open image path
-	input_path = filedialog.askopenfilename(title="Open Image",
-		filetype=(("PNG Files", ".png"), ("All Files", "*.*")))
-	if input_path:
-		my_img = ImageTk.PhotoImage(Image.open(input_path))
-		pic_label.config(image=my_img, bg="black")
+        # Calculate aspect ratio preserving size
+        img.thumbnail((target_width, target_height), Image.LANCZOS)
 
-def remove_thing():
-	# get file path to save file
-	output_path = filedialog.asksaveasfilename(title="Save As",
-		filetype=(("PNG Files", '.png'), ("All Files", "*.*")))
+        # Convert to Tkinter-compatible PhotoImage
+        return ImageTk.PhotoImage(img)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Image file not found: {path}")
+    except Exception as e:
+        raise RuntimeError(f"Error processing image: {e}")
 
-	# get file name
-	input = Image.open(input_path)
-	# remove bg
-	output = remove(input)
-	# Save the file
-	output.save(output_path, 'png')
+# --- Tkinter GUI ---
+root = tk.Tk()
+root.title("Image Resize Example")
 
-	# Put new image on the screen
-	global my_img
-	my_img = ImageTk.PhotoImage(Image.open(output_path))
+# Path to your image
+image_path = "./images/grey_dot.png"  # Replace with your image file
 
-	# Update label
-	pic_label.config(image=my_img)
+if not os.path.exists(image_path):
+    print(f"Error: {image_path} does not exist.")
+    root.destroy()
+else:
+    # Resize image to fit within 300x200 pixels
+    photo = resize_image(image_path, 10, 10)
 
-
-
-# Gui
-pic_label = Label(root, text='')
-pic_label.pack(pady=20)
-
-open_button = Button(root, text="Open Image", command=open_thing)
-open_button.pack(pady=20)
-
-remove_button = Button(root, text="Remove Background", command=remove_thing)
-remove_button.pack(pady=10)
-
+    # Display image in a label
+    label = tk.Label(root, image=photo)
+    label.pack(padx=10, pady=10)
+print(photo)
 root.mainloop()
