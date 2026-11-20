@@ -18,11 +18,11 @@ root = tk.Tk()
 root.geometry("1000x1000")
 
 wk_x = 4
-wk_y = 0
+wk_y = 3
 wk_axis = f"({wk_x},{wk_y})"
 
-bk_x = 5
-bk_y = 8
+bk_x = 4
+bk_y = 5
 bk_axis = f"({bk_x},{bk_y})"
 
 board_color = {}
@@ -65,52 +65,6 @@ class king(piece):
     def __init__(self,x,y,xy, color="white"):
         super(). __init__ (x,y,xy, color)
 
-    def up(self):
-        if self.y > 1:
-            self.y += 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-    def down(self):
-        if self.y < 8:
-            self.y -= 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-    def left(self):
-        if self.x > 1:
-            self.x -= 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-    def right(self):
-        if self.x > 1:
-            self.x += 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-
-    def ul(self):
-        if self.y < 8 and self.x > 1:
-            self.y += 1
-            self.x -= 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-    def dl(self):
-        if self.y < 8:
-            self.y -= 1
-            self.x -= 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-    def ur(self):
-        if self.x > 1:
-            self.y += 1
-            self.x += 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-    def dr(self):
-        if self.x > 1:
-            self.y -= 1
-            self.x += 1
-            self.xy = f"{self.x} {self.y}"
-            return self.xy
-
         #abstract in parent class?
     def move(self, newspace=(4,5)):
         #make sure tuple is in movable range (eg. x is within 1, y is within 1, both are on board)
@@ -119,6 +73,7 @@ class king(piece):
 
         #abstract in parent class?
     def list_possible_moves(self , forbidden = []):
+        unlisted_forbidden = []
         moves = []
         moves.append((self.x+1, self.y)) #right
         moves.append((self.x-1, self.y)) #left
@@ -129,7 +84,24 @@ class king(piece):
         moves.append((self.x, self.y-1)) #down middle
         moves.append((self.x+1, self.y-1)) #down right
 
-        possible_moves = [move for move in moves if 0 <= move[0] < 8 and 0 <= move[1] < 8 and move not in forbidden]
+        if forbidden != []:
+            for i in range(len(forbidden)):
+                if isinstance(forbidden[i], list):
+                    for x in range(len(forbidden[i])):
+                        print(len(forbidden[i]))
+                        if isinstance(forbidden[i][x], list):
+                            for y in range(len(forbidden[i][x])):
+                                unlisted_forbidden.append(forbidden[i][x][y])
+                                print(f"appened 2D list value {forbidden[i][x][y]}")
+                        else:
+                            unlisted_forbidden.append(forbidden[i][x])
+                            print(f"appened list value {forbidden[i][x]}")
+                else:
+                    unlisted_forbidden.append(forbidden[i])
+                    print(f"appened {forbidden[i]}")
+        print(f"unlisted fobidden: {unlisted_forbidden}")
+
+        possible_moves = [move for move in moves if 0 <= move[0] < 8 and 0 <= move[1] < 8 and move not in unlisted_forbidden]
         return possible_moves
     
     def __str__(self):
@@ -147,9 +119,9 @@ bk_attack_spaces = bk.list_possible_moves()
 white_attack_spaces = [wk_attack_spaces]
 black_attack_spaces = [bk_attack_spaces]
 
-wk_possible_moves = wk.list_possible_moves([black_attack_spaces,wk_axis])
+wk_possible_moves = wk.list_possible_moves([black_attack_spaces,white_pieces])
 bk_possible_moves = bk.list_possible_moves([white_attack_spaces,black_pieces])
-
+print(f"wk: {wk_possible_moves}")
 gd_path = r"./images/grey_dot.png"
 wk_path = r"./images/white_king.png"
 bk_path = r"./images/black_king.png"
@@ -180,34 +152,73 @@ def set_all_pieces():
         for e in range(8):
             board[f"{e}{i}"].config(image="", padding=(10,50))
     set_piece(wk_x,wk_y,white_king_icon)
-    #set_piece(bk_x,bk_y,black_king_icon)
+    set_piece(bk_x,bk_y,black_king_icon)
 
-def refresh_moves():
-    global wk_x, wk_y, wk_axis, wk_attack_spaces, wk_possible_moves, black_attack_spaces
+def wk_refresh_moves():
+    global wk_x, wk_y, wk_axis, wk_attack_spaces, wk_possible_moves, black_attack_spaces, white_attack_spaces
     wk_axis = wk_x,wk_y
     wk = king(wk_x,wk_y,wk_axis)
     wk_attack_spaces = wk.list_possible_moves()
-    wk_possible_moves = wk.list_possible_moves([black_attack_spaces,wk_axis])
+    white_attack_spaces = [wk_attack_spaces]
+    black_attack_spaces = [bk_attack_spaces]
+    wk_possible_moves = wk.list_possible_moves([black_attack_spaces,white_pieces])
+    print(wk_attack_spaces)
+    print(wk_possible_moves)
+    return wk_possible_moves
+
+def bk_refresh_moves():
+    global bk_x, bk_y, bk_axis, bk_attack_spaces, bk_possible_moves, white_attack_spaces, black_attack_spaces
+    bk_axis = bk_x,bk_y
+    bk = king(bk_x,bk_y,bk_axis)
+    bk_attack_spaces = bk.list_possible_moves()
+    black_attack_spaces = [bk_attack_spaces]
+    white_attack_spaces = [wk_attack_spaces]
+    bk_possible_moves = bk.list_possible_moves([white_attack_spaces,black_pieces])
+    return bk_possible_moves
+
+def refresh_moves():
+    wk_refresh_moves()
+    bk_refresh_moves()
     
-def move(x,y,new_x,new_y):
-    global wk_x, wk_y
+def wk_move(new_x,new_y):
+    global wk_x, wk_y, turn
     wk_x = new_x
     wk_y = new_y
     refresh_moves()
     set_all_to_move_piece()
     set_all_pieces()
+    if turn == "white":
+        turn = "black"
+    else:
+        turn = "white"
+
+def bk_move(new_x,new_y):
+    global bk_x, bk_y, turn
+    bk_x = new_x
+    bk_y = new_y
+    refresh_moves()
+    set_all_to_move_piece()
+    set_all_pieces()
+    if turn == "white":
+        turn = "black"
+    else:
+        turn = "white"
 
 def move_king(x,y):
     if turn == "white":
         if board[f"{y}{x}"] == board[f"{wk_y}{wk_x}"]:
             for i in range(len(wk_possible_moves)):
                 if board_color[f"{wk_possible_moves[i][0]}{wk_possible_moves[i][1]}"] == "white":
-                    board[f"{wk_possible_moves[i][0]}{wk_possible_moves[i][1]}"].config(image=grey_dot, style="white.TButton", command=partial(move, wk_x, wk_y, wk_possible_moves[i][0], wk_possible_moves[i][1]), padding=(34,34))
+                    board[f"{wk_possible_moves[i][0]}{wk_possible_moves[i][1]}"].config(image=grey_dot, style="white.TButton", command=partial(wk_move, wk_possible_moves[i][0], wk_possible_moves[i][1]), padding=(34,34))
                 if board_color[f"{wk_possible_moves[i][0]}{wk_possible_moves[i][1]}"] == "green":
-                    board[f"{wk_possible_moves[i][0]}{wk_possible_moves[i][1]}"].config(image=grey_dot, style="green.TButton", command=partial(move, wk_x, wk_y, wk_possible_moves[i][0], wk_possible_moves[i][1]), padding=(34,34))
+                    board[f"{wk_possible_moves[i][0]}{wk_possible_moves[i][1]}"].config(image=grey_dot, style="green.TButton", command=partial(wk_move, wk_possible_moves[i][0], wk_possible_moves[i][1]), padding=(34,34))
     elif turn == "black":
-        if x == bk_x and y == bk_y:
-            pass
+        if board[f"{y}{x}"] == board[f"{bk_y}{bk_x}"]:
+            for i in range(len(bk_possible_moves)):
+                if board_color[f"{bk_possible_moves[i][0]}{bk_possible_moves[i][1]}"] == "white":
+                    board[f"{bk_possible_moves[i][0]}{bk_possible_moves[i][1]}"].config(image=grey_dot, style="white.TButton", command=partial(bk_move, bk_possible_moves[i][0], bk_possible_moves[i][1]), padding=(34,34))
+                if board_color[f"{bk_possible_moves[i][0]}{bk_possible_moves[i][1]}"] == "green":
+                    board[f"{bk_possible_moves[i][0]}{bk_possible_moves[i][1]}"].config(image=grey_dot, style="green.TButton", command=partial(bk_move, bk_possible_moves[i][0], bk_possible_moves[i][1]), padding=(34,34))
 
 def move_piece(x,y):
     if boolean == True:
